@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Events Assignment</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>JavaScript Events Handling</h1>
+
+        <button id="clickButton">Click Me</button>
+        <p id="clickMessage"></p>
+
+        <div id="hoverBox" class="hover-box">Hover Over Me</div>
+
+        <input type="text" id="nameInputField" placeholder="Enter your name">
+        <p id="nameMessage"></p>
+
+        <button id="doubleClickButton">Double Click Me</button>
+        <p id="doubleClickMessage"></p>
+
+        <hr>
+
+        <h2>Event Bubbling Example</h2>
+
+        <div class="outer-box" id="outerBubbleBox">
+            Outer Div
+            <div class="inner-box" id="innerBubbleBox">
+                Inner Div (Click Here)
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Event Capturing Example</h2>
+
+        <div class="outer-box" id="outerCaptureBox">
+            Outer Div
+            <div class="inner-box" id="innerCaptureBox">
+                Inner Div (Click Here)
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Event Delegation</h2>
+
+        <ul id="itemList">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+            <li>Item 4</li>
+        </ul>
+
+        <p id="listOutput"></p>
+
+    </div>
+
+</body>
+</html>
