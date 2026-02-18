@@ -18,7 +18,7 @@ const removeLastCharacter = () => {
 
 const calculateResult = () => {
     try {
-        const result = Function(`"use strict"; return (${displayInput.value})`)();
+        const result = eval(displayInput.value);
         displayInput.value = result;
     } catch {
         displayInput.value = "Error";
@@ -26,9 +26,7 @@ const calculateResult = () => {
 };
 
 allButtons.forEach(button => {
-
     const buttonValue = button.dataset.value;
-
     if (buttonValue) {
         button.addEventListener("click", () => {
             appendToDisplay(buttonValue);
