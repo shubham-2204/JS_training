@@ -1,3 +1,5 @@
+import { STORAGE_KEYS, ROUTES, DATA_FILE } from "./constants.js";
+
 const welcomeHeading = document.getElementById("welcomeHeading");
 const sliderContainer = document.getElementById("sliderContainer");
 const prevButton = document.getElementById("prevBtn");
@@ -23,6 +25,7 @@ const checkAuth = () => {
 const loadSlides = async () => {
     const response = await fetch(DATA_FILE);
     employees = await response.json();
+
     employees.forEach((employee) => {
         const imageElement = document.createElement("img");
         imageElement.src = employee.image;
@@ -71,7 +74,6 @@ const goPrev = () => {
         slideImage();
     }
 };
-
 nextButton.addEventListener("click", goNext);
 prevButton.addEventListener("click", goPrev);
 checkAuth();

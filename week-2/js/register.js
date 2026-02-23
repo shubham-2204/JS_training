@@ -1,12 +1,15 @@
+import { STORAGE_KEYS, ROUTES, ERROR_MESSAGES } from "./constants.js";
+import { validateRegisterInputs } from "./validation.js";
+
 const registerButton = document.getElementById("registerButton");
 const registerError = document.getElementById("registerError");
 
 const handleRegister = () => {
-    registerError.textContent = "";
     const usernameValue = document.getElementById("registerUsernameInput").value;
     const passwordValue = document.getElementById("registerPasswordInput").value;
     const confirmPasswordValue = document.getElementById("registerConfirmPasswordInput").value;
-    const validationResult =    validateRegisterInputs(
+    registerError.textContent = "";
+    const validationResult = validateRegisterInputs(
         usernameValue,
         passwordValue,
         confirmPasswordValue
@@ -17,13 +20,15 @@ const handleRegister = () => {
         return;
     }
 
-    const storedUsers = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
+    const storedUsers =
+        JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS)) || [];
+
     const userExists = storedUsers.some(
         user => user.username === validationResult.username
     );
 
     if (userExists) {
-        registerError.textContent = "Username already exists.";
+        registerError.textContent = ERROR_MESSAGES.USER_EXISTS;
         return;
     }
 
@@ -38,5 +43,4 @@ const handleRegister = () => {
     );
     window.location.href = ROUTES.LOGIN;
 };
-
 registerButton.addEventListener("click", handleRegister);

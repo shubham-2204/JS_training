@@ -1,10 +1,13 @@
+import { STORAGE_KEYS, ROUTES, ERROR_MESSAGES } from "./constants.js";
+import { validateLoginInputs } from "./validation.js";
+
 const loginButton = document.getElementById("loginButton");
 const loginError = document.getElementById("loginError");
 
 const handleLogin = () => {
-    loginError.textContent = "";
     const usernameValue = document.getElementById("loginUsernameInput").value;
     const passwordValue = document.getElementById("loginPasswordInput").value;
+    loginError.textContent = "";
     const validationResult = validateLoginInputs(
         usernameValue,
         passwordValue
@@ -19,7 +22,7 @@ const handleLogin = () => {
         JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS));
 
     if (!storedUsers) {
-        loginError.textContent = "No registered users found.";
+        loginError.textContent = ERROR_MESSAGES.NO_USERS;
         return;
     }
 
@@ -29,7 +32,7 @@ const handleLogin = () => {
     );
 
     if (!validUser) {
-        loginError.textContent = "Invalid username or password.";
+        loginError.textContent = ERROR_MESSAGES.INVALID_LOGIN;
         return;
     }
 
@@ -39,5 +42,4 @@ const handleLogin = () => {
     );
     window.location.href = ROUTES.WELCOME;
 };
-
 loginButton.addEventListener("click", handleLogin);
