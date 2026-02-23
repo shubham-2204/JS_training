@@ -13,7 +13,6 @@ async function loadTasks() {
       resolve(localStorage.getItem("tasks"));
     }, 0);
   });
-
   tasks = data ? JSON.parse(data) : defaultTasks();
   renderTasks("all");
 }
@@ -39,11 +38,6 @@ taskForm.addEventListener("submit", (e) => {
   const text = taskInput.value.trim();
   if (!text) return;
 
-  // const newTask = {
-  //   id: Date.now(),
-  //   text,
-  //   completed: false
-  // };
   const newTask = {
   id: Date.now(),
   text,
@@ -59,10 +53,8 @@ taskForm.addEventListener("submit", (e) => {
 });
 
 function renderTasks(filterType) {
-  taskList.innerHTML = "";
-
   let filteredTasks = tasks;
-
+  taskList.innerHTML = "";
   tasks.sort((a, b) => {
     if (!a.dueDate) return 1;
     if (!b.dueDate) return -1;
@@ -80,11 +72,9 @@ function renderTasks(filterType) {
   filteredTasks.map(task => {
     const li = document.createElement("li");
     li.className = task.completed ? "completed" : "";
-
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
-
     checkbox.addEventListener("change", () => {
       task.completed = checkbox.checked;
       saveTasks();
@@ -103,13 +93,11 @@ function renderTasks(filterType) {
     const del = document.createElement("span");
     del.textContent = "✖";
     del.className = "delete";
-
     del.addEventListener("click", () => {
       tasks = tasks.filter(t => t.id !== task.id);
       saveTasks();
       renderTasks(filterType);
     });
-
     li.append(checkbox, span, del);
     taskList.appendChild(li);
   });
@@ -126,11 +114,9 @@ filterButtons.forEach(btn => {
 function updateStats() {
   const total = tasks.length;
   const completed = tasks.filter(t => t.completed).length;
-
   const active = tasks.reduce((count, task) => {
     return task.completed ? count : count + 1;
   }, 0);
-
   stats.textContent = `Total: ${total} | Active: ${active} | Completed: ${completed}`;
 }
 
