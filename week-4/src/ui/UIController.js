@@ -1,119 +1,106 @@
 import { DOM } from "./DOMElements.js";
 
 export default class UIController {
+    showAuthScreen() {
+        DOM.authContainer.classList.remove("hidden");
+        DOM.startScreen.classList.add("hidden");
+        DOM.questionContainer.classList.add("hidden");
+        DOM.resultContainer.classList.add("hidden");
+        DOM.logoutBtn.classList.add("hidden");
+    }
 
-  /* ================= SCREEN CONTROL ================= */
+    showStartScreen() {
+        DOM.authContainer.classList.add("hidden");
+        DOM.startScreen.classList.remove("hidden");
+        DOM.questionContainer.classList.add("hidden");
+        DOM.resultContainer.classList.add("hidden");
+        DOM.logoutBtn.classList.remove("hidden");
+    }
 
-  showAuthScreen() {
-    DOM.authContainer.classList.remove("hidden");
-    DOM.startScreen.classList.add("hidden");
-    DOM.questionContainer.classList.add("hidden");
-    DOM.resultContainer.classList.add("hidden");
-    DOM.logoutBtn.classList.add("hidden");
-  }
+    showQuestionScreen() {
+        DOM.startScreen.classList.add("hidden");
+        DOM.resultContainer.classList.add("hidden");
+        DOM.questionContainer.classList.remove("hidden");
+    }
 
-  showStartScreen() {
-    DOM.authContainer.classList.add("hidden");
-    DOM.startScreen.classList.remove("hidden");
-    DOM.questionContainer.classList.add("hidden");
-    DOM.resultContainer.classList.add("hidden");
-    DOM.logoutBtn.classList.remove("hidden");
-  }
+    showResultScreen() {
+        DOM.questionContainer.classList.add("hidden");
+        DOM.resultContainer.classList.remove("hidden");
+    }
 
-  showQuestionScreen() {
-    DOM.startScreen.classList.add("hidden");
-    DOM.resultContainer.classList.add("hidden");
-    DOM.questionContainer.classList.remove("hidden");
-  }
+    renderQuestion(question, index, total) {
+        DOM.nextBtn.classList.add("hidden");
+        DOM.choicesList.innerHTML = "";
 
-  showResultScreen() {
-    DOM.questionContainer.classList.add("hidden");
-    DOM.resultContainer.classList.remove("hidden");
-  }
+        DOM.progressDisplay.textContent =
+            `Question ${index + 1} / ${total}`;
 
-  /* ================= QUESTION ================= */
+        DOM.questionText.textContent = question.question;
 
-  renderQuestion(question, index, total) {
-    DOM.nextBtn.classList.add("hidden");
-    DOM.choicesList.innerHTML = "";
+        question.choices.forEach(choice => {
+            const li = document.createElement("li");
+            li.textContent = choice;
+            DOM.choicesList.appendChild(li);
+        });
+    }
 
-    DOM.progressDisplay.textContent =
-      `Question ${index + 1} / ${total}`;
+    highlightAnswers(correctAnswer, selectedChoice) {
+        const allChoices = DOM.choicesList.querySelectorAll("li");
 
-    DOM.questionText.textContent = question.question;
+        allChoices.forEach(li => {
+            li.style.pointerEvents = "none";
 
-    question.choices.forEach(choice => {
-      const li = document.createElement("li");
-      li.textContent = choice;
-      DOM.choicesList.appendChild(li);
-    });
-  }
+            if (li.textContent === correctAnswer) {
+                li.classList.add("correct");
+            }
 
-  highlightAnswers(correctAnswer, selectedChoice) {
-    const allChoices = DOM.choicesList.querySelectorAll("li");
+            if (
+                li.textContent === selectedChoice &&
+                selectedChoice !== correctAnswer
+            ) {
+                li.classList.add("wrong");
+            }
+        });
 
-    allChoices.forEach(li => {
-      li.style.pointerEvents = "none";
+        DOM.nextBtn.classList.remove("hidden");
+    }
 
-      if (li.textContent === correctAnswer) {
-        li.classList.add("correct");
-      }
+    renderResult(score, total, message) {
+        DOM.scoreDisplay.textContent =
+            `You scored ${score} / ${total}`;
 
-      if (
-        li.textContent === selectedChoice &&
-        selectedChoice !== correctAnswer
-      ) {
-        li.classList.add("wrong");
-      }
-    });
+        DOM.performanceDisplay.textContent = message;
+    }
 
-    DOM.nextBtn.classList.remove("hidden");
-  }
+    renderLeaderboard(entries) {
+        DOM.leaderboardList.innerHTML = "";
 
-  /* ================= RESULT ================= */
+        entries.forEach((entry, i) => {
+            const li = document.createElement("li");
+            li.textContent =
+                `${i + 1}. ${entry.username} - ${entry.score}`;
 
-  renderResult(score, total, message) {
-    DOM.scoreDisplay.textContent =
-      `You scored ${score} / ${total}`;
+            DOM.leaderboardList.appendChild(li);
+        });
+    }
 
-    DOM.performanceDisplay.textContent = message;
-  }
+    updateTimerDisplay(timeLeft) {
+        DOM.timerDisplay.textContent = `${timeLeft}s`;
+    }
 
-  /* ================= LEADERBOARD ================= */
+    getSelectedCategory() {
+        return DOM.categorySelect.value;
+    }
 
-  renderLeaderboard(entries) {
-    DOM.leaderboardList.innerHTML = "";
+    getSelectedDifficulty() {
+        return DOM.difficultySelect.value;
+    }
 
-    entries.forEach((entry, i) => {
-      const li = document.createElement("li");
-      li.textContent =
-        `${i + 1}. ${entry.username} - ${entry.score}`;
-
-      DOM.leaderboardList.appendChild(li);
-    });
-  }
-
-  /* ================= TIMER ================= */
-
-  updateTimerDisplay(timeLeft) {
-    DOM.timerDisplay.textContent = `${timeLeft}s`;
-  }
-
-  /* ================= UTIL ================= */
-
-  getSelectedCategory() {
-    return DOM.categorySelect.value;
-  }
-
-  getSelectedDifficulty() {
-    return DOM.difficultySelect.value;
-  }
-
-  clearChoicesInteraction() {
-    const allChoices = DOM.choicesList.querySelectorAll("li");
-    allChoices.forEach(li => {
-      li.style.pointerEvents = "auto";
-      li.classList.remove("correct", "wrong");
-    });
-  }
+    clearChoicesInteraction() {
+        const allChoices = DOM.choicesList.querySelectorAll("li");
+        allChoices.forEach(li => {
+            li.style.pointerEvents = "auto";
+            li.classList.remove("correct", "wrong");
+        });
+    }
 }

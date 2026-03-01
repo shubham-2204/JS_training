@@ -11,9 +11,6 @@ export default class AuthController {
     }
 
     bindEvents(onLoginSuccess, onLogout) {
-
-        /* Toggle Login/Register */
-
         DOM.toggleAuth.addEventListener("click", () => {
             this.isLoginMode = !this.isLoginMode;
 
@@ -30,8 +27,6 @@ export default class AuthController {
 
             DOM.authError.textContent = "";
         });
-
-        /* Submit */
 
         DOM.authSubmit.addEventListener("click", () => {
             const username = DOM.authUsername.value.trim();
@@ -66,35 +61,19 @@ export default class AuthController {
                         "Username already exists.";
                     return;
                 }
-
-                // users.push({ username, password });
-                // this.authService.setUsers(users);
-
-                // DOM.authError.textContent =
-                //   "Registered successfully! Please login.";
-
                 users.push({ username, password });
                 this.authService.setUsers(users);
-
-                /* Switch to Login Mode Automatically */
                 this.isLoginMode = true;
-
                 DOM.authTitle.textContent = "Login";
                 DOM.authSubmit.textContent = "Login";
                 DOM.toggleAuth.textContent =
                     "Don't have an account? Register";
-
-                /* Clear Fields */
                 DOM.authUsername.value = "";
                 DOM.authPassword.value = "";
-
-                /* Success Message */
                 DOM.authError.textContent =
                     "Registered successfully! Please login.";
             }
         });
-
-        /* Logout */
 
         DOM.logoutBtn.addEventListener("click", () => {
             this.authService.logout();

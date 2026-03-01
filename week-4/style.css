@@ -4,6 +4,7 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 body {
@@ -20,9 +21,9 @@ body {
   min-height: 520px;
   padding: 30px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #ffffff14;
   backdrop-filter: blur(15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 40px #00000066;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -98,7 +99,7 @@ button:hover {
 }
 
 button:disabled {
-  background-color: grey;
+  background-color: #808080;
   cursor: not-allowed;
 }
 
@@ -121,17 +122,17 @@ li {
 
 li:hover {
   background: #5f339c;
-  color: white;
+  color: #ffffff;
 }
 
 li.correct {
   background-color: #28a745 !important;
-  color: white !important;
+  color: #ffffff !important;
 }
 
 li.wrong {
   background-color: #dc3545 !important;
-  color: white !important;
+  color: #ffffff !important;
 }
 
 #result-container {
@@ -148,18 +149,14 @@ li.wrong {
 }
 
 #leaderboard li {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: #ffffff33;
+  color: #ffffff;
   margin: 6px 0;
 }
 
 .hidden {
   display: none;
 }
-
-/* ===================== */
-/* 🔐 AUTH SECTION STYLES */
-/* ===================== */
 
 #auth-container {
   width: 100%;

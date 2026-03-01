@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,11 +8,10 @@
   <link rel="stylesheet" href="style.css" />
   <script defer type="module" src="script.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>Quiz App</h1>
-
-    <!-- 🔐 AUTH SECTION (NEW - ADDED ABOVE START SCREEN) -->
     <div id="auth-container">
       <h2 id="auth-title">Login</h2>
 
@@ -24,11 +24,7 @@
         Don't have an account? Register
       </p>
     </div>
-
-    <!-- 🚪 LOGOUT BUTTON (HIDDEN BY DEFAULT) -->
     <button id="logout-btn" class="hidden">Logout</button>
-
-    <!-- ORIGINAL START SCREEN (UNCHANGED) -->
     <div id="start-screen" class="hidden">
 
       <div class="filters">
@@ -50,7 +46,6 @@
       <button id="start-btn">Start Quiz</button>
     </div>
 
-    <!-- ORIGINAL QUESTION CONTAINER (UNCHANGED) -->
     <div id="question-container" class="hidden">
       <div class="quiz-top">
         <p id="timer"></p>
@@ -61,7 +56,6 @@
       <button id="next-btn" class="hidden">Next Question</button>
     </div>
 
-    <!-- ORIGINAL RESULT CONTAINER (UNCHANGED) -->
     <div id="result-container" class="hidden">
       <h2>Your Score:</h2>
       <p id="score"></p>
@@ -73,4 +67,5 @@
 
   </div>
 </body>
+
 </html>
