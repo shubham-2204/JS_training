@@ -5,6 +5,7 @@
   font-family: 'Poppins', sans-serif;
 }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 body {
   height: 100vh;
   display: flex;
@@ -12,6 +13,7 @@ body {
   align-items: center;
   background: linear-gradient(135deg, #5f339c, #1e1e2f);
 }
+
 .container {
   width: 650px;
   max-width: 95%;
@@ -26,36 +28,43 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
 h1 {
   margin-bottom: 25px;
   font-size: 28px;
   font-weight: 600;
   letter-spacing: 1px;
 }
+
 h2 {
   margin-bottom: 20px;
   text-align: center;
 }
+
 h3 {
   margin-top: 20px;
   margin-bottom: 10px;
 }
+
 #start-screen {
   width: 100%;
   text-align: center;
 }
+
 .filters {
   display: flex;
   gap: 15px;
   justify-content: center;
   margin-bottom: 20px;
 }
+
 select {
   padding: 8px 12px;
   border-radius: 6px;
   border: none;
   font-size: 14px;
 }
+
 .quiz-top {
   width: 100%;
   display: flex;
@@ -63,12 +72,15 @@ select {
   margin-bottom: 10px;
   font-weight: 600;
 }
+
 #timer {
   color: #ffdd57;
 }
+
 #progress {
   color: #4cd3ff;
 }
+
 button {
   margin-top: 15px;
   padding: 10px 25px;
@@ -80,17 +92,21 @@ button {
   cursor: pointer;
   transition: 0.3s;
 }
+
 button:hover {
   background-color: #7b4edb;
 }
+
 button:disabled {
   background-color: grey;
   cursor: not-allowed;
 }
+
 ul {
   list-style: none;
   width: 100%;
 }
+
 li {
   background: #ffffff;
   color: #333;
@@ -102,33 +118,82 @@ li {
   transition: 0.2s;
   font-weight: 500;
 }
+
 li:hover {
   background: #5f339c;
   color: white;
 }
+
 li.correct {
   background-color: #28a745 !important;
   color: white !important;
 }
+
 li.wrong {
   background-color: #dc3545 !important;
   color: white !important;
 }
+
 #result-container {
   text-align: center;
 }
+
 #performance {
   margin-top: 10px;
   font-weight: 600;
 }
+
 #leaderboard {
   margin-top: 10px;
 }
+
 #leaderboard li {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   margin: 6px 0;
 }
+
 .hidden {
   display: none;
+}
+
+/* ===================== */
+/* 🔐 AUTH SECTION STYLES */
+/* ===================== */
+
+#auth-container {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#auth-container input {
+  width: 80%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+}
+
+.auth-error {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.toggle-auth {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #4cd3ff;
+  cursor: pointer;
+}
+
+.toggle-auth:hover {
+  text-decoration: underline;
+}
+
+#logout-btn {
+  align-self: flex-end;
+  margin-bottom: 10px;
 }

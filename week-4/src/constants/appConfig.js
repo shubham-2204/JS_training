@@ -1,0 +1,4 @@
+export const APP_CONFIG = {
+  TIMER_DURATION: 15,
+  LEADERBOARD_LIMIT: 5
+};

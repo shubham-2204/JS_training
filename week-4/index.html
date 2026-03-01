@@ -5,13 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz App</title>
   <link rel="stylesheet" href="style.css" />
-  <script defer src="questions.js"></script>
-  <script defer src="script.js"></script>
+  <script defer type="module" src="script.js"></script>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
     <h1>Quiz App</h1>
-    <div id="start-screen">
+
+    <!-- 🔐 AUTH SECTION (NEW - ADDED ABOVE START SCREEN) -->
+    <div id="auth-container">
+      <h2 id="auth-title">Login</h2>
+
+      <input type="text" id="auth-username" placeholder="Username" />
+      <input type="password" id="auth-password" placeholder="Password" />
+      <p id="auth-error" class="auth-error"></p>
+
+      <button id="auth-submit">Login</button>
+      <p id="toggle-auth" class="toggle-auth">
+        Don't have an account? Register
+      </p>
+    </div>
+
+    <!-- 🚪 LOGOUT BUTTON (HIDDEN BY DEFAULT) -->
+    <button id="logout-btn" class="hidden">Logout</button>
+
+    <!-- ORIGINAL START SCREEN (UNCHANGED) -->
+    <div id="start-screen" class="hidden">
 
       <div class="filters">
         <select id="category-select">
@@ -28,9 +46,11 @@
           <option value="Hard">Hard</option>
         </select>
       </div>
+
       <button id="start-btn">Start Quiz</button>
     </div>
 
+    <!-- ORIGINAL QUESTION CONTAINER (UNCHANGED) -->
     <div id="question-container" class="hidden">
       <div class="quiz-top">
         <p id="timer"></p>
@@ -39,9 +59,10 @@
       <h2 id="question-text"></h2>
       <ul id="choices-list"></ul>
       <button id="next-btn" class="hidden">Next Question</button>
-      </div>
+    </div>
 
-      <div id="result-container" class="hidden">
+    <!-- ORIGINAL RESULT CONTAINER (UNCHANGED) -->
+    <div id="result-container" class="hidden">
       <h2>Your Score:</h2>
       <p id="score"></p>
       <p id="performance"></p>
@@ -49,6 +70,7 @@
       <ul id="leaderboard"></ul>
       <button id="restart-btn">Restart Quiz</button>
     </div>
-    </div>
+
+  </div>
 </body>
 </html>
