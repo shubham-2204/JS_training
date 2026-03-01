@@ -29,11 +29,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(
-        135deg,
-        var(--color-background-start),
-        var(--color-background-end)
-    );
+    background: linear-gradient(135deg,
+            var(--color-background-start),
+            var(--color-background-end));
 }
 
 .app-container {
