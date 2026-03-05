@@ -5,7 +5,7 @@ import { renderStats } from "./ui/statsRenderer.js";
 import { bindEvents } from "./ui/eventBinder.js";
 import { FILTER_TYPES } from "./constants/filterTypes.js";
 
-const initializeApplication = () => {
+(() => {
     taskService.initialize();
 
     const initialTasks = taskService.getFilteredTasks(FILTER_TYPES.ALL);
@@ -21,5 +21,4 @@ const initializeApplication = () => {
         defaultFilterButton.classList.add("active");
         defaultFilterButton.setAttribute("aria-pressed", "true");
     }
-};
-initializeApplication();
+})();

@@ -8,7 +8,7 @@ let currentFilter = FILTER_TYPES.ALL;
 
 const updateSubmitButtonState = () => {
     const trimmedValue = DOM.taskInput.value.trim();
-    DOM.submitButton.disabled = trimmedValue.length === 0;
+    DOM.submitButton.disabled = !trimmedValue.length;
 };
 
 const refreshUI = () => {
