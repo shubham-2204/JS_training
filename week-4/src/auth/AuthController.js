@@ -26,6 +26,10 @@ export default class AuthController {
                     : "Already have an account? Login";
 
             DOM.authError.textContent = "";
+            DOM.authError.classList.remove("auth-success");
+            DOM.authError.classList.add("auth-error");
+            DOM.authUsername.value = "";
+            DOM.authPassword.value = "";
         });
 
         DOM.authSubmit.addEventListener("click", () => {
@@ -35,6 +39,8 @@ export default class AuthController {
             if (!username || !password) {
                 DOM.authError.textContent =
                     "All fields are required.";
+                DOM.authError.classList.remove("auth-success");
+                DOM.authError.classList.add("auth-error");
                 return;
             }
 
@@ -50,6 +56,8 @@ export default class AuthController {
                 if (!user) {
                     DOM.authError.textContent =
                         "Invalid credentials.";
+                    DOM.authError.classList.remove("auth-success");
+                    DOM.authError.classList.add("auth-error");
                     return;
                 }
 
@@ -59,6 +67,8 @@ export default class AuthController {
                 if (users.find(u => u.username === username)) {
                     DOM.authError.textContent =
                         "Username already exists.";
+                    DOM.authError.classList.remove("auth-success");
+                    DOM.authError.classList.add("auth-error");
                     return;
                 }
                 users.push({ username, password });
@@ -72,6 +82,8 @@ export default class AuthController {
                 DOM.authPassword.value = "";
                 DOM.authError.textContent =
                     "Registered successfully! Please login.";
+                DOM.authError.classList.remove("auth-error");
+                DOM.authError.classList.add("auth-success");
             }
         });
 

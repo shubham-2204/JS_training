@@ -1,4 +1,5 @@
 import { shuffle } from "../utils/helpers.js";
+import { APP_CONFIG } from "../constants/appConfig.js";
 
 export default class QuizEngine {
     constructor(questionBank) {
@@ -28,19 +29,24 @@ export default class QuizEngine {
             });
         }
         else {
-            result = this.questionBank[category][difficulty];
+            result = [...this.questionBank[category][difficulty]];
         }
 
         return result;
     }
 
     start(category, difficulty) {
-        this.filteredQuestions = this.flatten(category, difficulty);
+        const questionPool = this.flatten(category, difficulty);
 
-        if (!this.filteredQuestions || this.filteredQuestions.length === 0) {
+        if (!questionPool || questionPool.length === 0) {
             return false;
         }
-        shuffle(this.filteredQuestions);
+        shuffle(questionPool);
+
+        this.filteredQuestions = questionPool.slice(
+            0,
+            APP_CONFIG.QUIZ_QUESTION_LIMIT
+        );
         this.index = 0;
         this.score = 0;
         return true;

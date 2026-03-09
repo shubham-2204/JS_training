@@ -85,7 +85,7 @@ export default class UIController {
     }
 
     updateTimerDisplay(timeLeft) {
-        DOM.timerDisplay.textContent = `${timeLeft}s`;
+        DOM.timerDisplay.textContent = timeLeft;
     }
 
     getSelectedCategory() {

@@ -17,6 +17,7 @@ export default class QuizApp {
         this.ui = new UIController();
         this.timerInterval = null;
         this.timeLeft = APP_CONFIG.TIMER_DURATION;
+        this.hasAnsweredCurrentQuestion = false;
     }
 
     init() {
@@ -34,12 +35,16 @@ export default class QuizApp {
     bindAuthFlow() {
         this.authController.init(
             () => this.ui.showStartScreen(),
-            () => this.ui.showAuthScreen()
+            () => {
+                this.stopTimer();
+                this.ui.showAuthScreen();
+            }
         );
     }
 
     bindQuizFlow() {
         DOM.startBtn.addEventListener("click", () => {
+            this.stopTimer();
             const category = this.ui.getSelectedCategory();
             const difficulty = this.ui.getSelectedDifficulty();
             const started = this.quizEngine.start(category, difficulty);
@@ -57,12 +62,18 @@ export default class QuizApp {
         });
 
         DOM.restartBtn.addEventListener("click", () => {
+            this.stopTimer();
             this.ui.showStartScreen();
         });
     }
 
     showQuestion() {
         const question = this.quizEngine.currentQuestion();
+        if (!question) {
+            this.showResult();
+            return;
+        }
+        this.hasAnsweredCurrentQuestion = false;
 
         this.ui.renderQuestion(
             question,
@@ -79,8 +90,15 @@ export default class QuizApp {
     }
 
     handleAnswer(selectedChoice) {
+        if (this.hasAnsweredCurrentQuestion) {
+            return;
+        }
+        this.hasAnsweredCurrentQuestion = true;
         this.stopTimer();
         const question = this.quizEngine.currentQuestion();
+        if (!question) {
+            return;
+        }
         const correctAnswer = question.answer;
         this.quizEngine.answer(selectedChoice);
         this.ui.highlightAnswers(correctAnswer, selectedChoice);
@@ -115,7 +133,9 @@ export default class QuizApp {
         this.ui.renderResult(score, total, message);
 
         const currentUser = this.authService.getCurrentUser();
-        this.leaderboardService.save(currentUser, score);
+        if (currentUser) {
+            this.leaderboardService.save(currentUser, score);
+        }
 
         this.renderLeaderboard();
     }
@@ -126,6 +146,7 @@ export default class QuizApp {
     }
 
     startTimer() {
+        this.stopTimer();
         this.timeLeft = APP_CONFIG.TIMER_DURATION;
         this.ui.updateTimerDisplay(formatTime(this.timeLeft));
 
@@ -143,5 +164,6 @@ export default class QuizApp {
 
     stopTimer() {
         clearInterval(this.timerInterval);
+        this.timerInterval = null;
     }
 }
