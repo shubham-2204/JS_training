@@ -1,33 +1,36 @@
 import { STORAGE_KEYS } from "../constants/storageKeys.js";
+import { safeParse } from "../utils/helpers.js";
+import type { UserCredentials } from "../types/models.js";
 
 export default class AuthService {
-    getUsers() {
-        return JSON.parse(
-            localStorage.getItem(STORAGE_KEYS.USERS)
-        ) || [];
+    getUsers(): UserCredentials[] {
+        return safeParse<UserCredentials[]>(
+            localStorage.getItem(STORAGE_KEYS.USERS),
+            []
+        );
     }
 
-    setUsers(users) {
+    setUsers(users: UserCredentials[]): void {
         localStorage.setItem(
             STORAGE_KEYS.USERS,
             JSON.stringify(users)
         );
     }
 
-    getCurrentUser() {
+    getCurrentUser(): string | null {
         return localStorage.getItem(
             STORAGE_KEYS.CURRENT_USER
         );
     }
 
-    setCurrentUser(username) {
+    setCurrentUser(username: string): void {
         localStorage.setItem(
             STORAGE_KEYS.CURRENT_USER,
             username
         );
     }
 
-    logout() {
+    logout(): void {
         localStorage.removeItem(
             STORAGE_KEYS.CURRENT_USER
         );

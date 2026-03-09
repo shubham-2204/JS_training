@@ -1,15 +1,28 @@
 import { shuffle } from "../utils/helpers.js";
 import { APP_CONFIG } from "../constants/appConfig.js";
+import type {
+    Category,
+    CategoryFilter,
+    Difficulty,
+    DifficultyFilter,
+    Question,
+    QuestionBank
+} from "../types/models.js";
 
 export default class QuizEngine {
-    constructor(questionBank) {
+    private questionBank: QuestionBank;
+    private index: number;
+    private score: number;
+    private filteredQuestions: Question[];
+
+    constructor(questionBank: QuestionBank) {
         this.questionBank = questionBank;
         this.index = 0;
         this.score = 0;
         this.filteredQuestions = [];
     }
-    flatten(category, difficulty) {
-        let result = [];
+    flatten(category: CategoryFilter, difficulty: DifficultyFilter): Question[] {
+        let result: Question[] = [];
 
         if (category === "All" && difficulty === "All") {
             Object.values(this.questionBank).forEach(levels => {
@@ -19,26 +32,30 @@ export default class QuizEngine {
             });
         }
         else if (category !== "All" && difficulty === "All") {
-            Object.values(this.questionBank[category]).forEach(arr => {
+            const selectedCategory = category as Category;
+            Object.values(this.questionBank[selectedCategory]).forEach(arr => {
                 result = result.concat(arr);
             });
         }
         else if (category === "All" && difficulty !== "All") {
+            const selectedDifficulty = difficulty as Difficulty;
             Object.values(this.questionBank).forEach(levels => {
-                result = result.concat(levels[difficulty]);
+                result = result.concat(levels[selectedDifficulty]);
             });
         }
         else {
-            result = [...this.questionBank[category][difficulty]];
+            const selectedCategory = category as Category;
+            const selectedDifficulty = difficulty as Difficulty;
+            result = [...this.questionBank[selectedCategory][selectedDifficulty]];
         }
 
         return result;
     }
 
-    start(category, difficulty) {
+    start(category: CategoryFilter, difficulty: DifficultyFilter): boolean {
         const questionPool = this.flatten(category, difficulty);
 
-        if (!questionPool || questionPool.length === 0) {
+        if (!questionPool || !questionPool.length) {
             return false;
         }
         shuffle(questionPool);
@@ -52,20 +69,24 @@ export default class QuizEngine {
         return true;
     }
 
-    currentQuestion() {
+    currentQuestion(): Question | undefined {
         return this.filteredQuestions[this.index];
     }
 
-    next() {
+    next(): void {
         this.index++;
     }
 
-    isFinished() {
+    isFinished(): boolean {
         return this.index >= this.filteredQuestions.length;
     }
 
-    answer(choice) {
-        const correctAnswer = this.currentQuestion().answer;
+    answer(choice: string): boolean {
+        const current = this.currentQuestion();
+        if (!current) {
+            return false;
+        }
+        const correctAnswer = current.answer;
         if (choice === correctAnswer) {
             this.score++;
             return true;
@@ -73,15 +94,15 @@ export default class QuizEngine {
         return false;
     }
 
-    getScore() {
+    getScore(): number {
         return this.score;
     }
 
-    getTotalQuestions() {
+    getTotalQuestions(): number {
         return this.filteredQuestions.length;
     }
 
-    getCurrentIndex() {
+    getCurrentIndex(): number {
         return this.index;
     }
 }

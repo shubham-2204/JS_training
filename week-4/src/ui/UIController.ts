@@ -1,7 +1,13 @@
 import { DOM } from "./DOMElements.js";
+import type {
+    CategoryFilter,
+    DifficultyFilter,
+    LeaderboardEntry,
+    Question
+} from "../types/models.js";
 
 export default class UIController {
-    showAuthScreen() {
+    showAuthScreen(): void {
         DOM.authContainer.classList.remove("hidden");
         DOM.startScreen.classList.add("hidden");
         DOM.questionContainer.classList.add("hidden");
@@ -9,7 +15,7 @@ export default class UIController {
         DOM.logoutBtn.classList.add("hidden");
     }
 
-    showStartScreen() {
+    showStartScreen(): void {
         DOM.authContainer.classList.add("hidden");
         DOM.startScreen.classList.remove("hidden");
         DOM.questionContainer.classList.add("hidden");
@@ -17,18 +23,18 @@ export default class UIController {
         DOM.logoutBtn.classList.remove("hidden");
     }
 
-    showQuestionScreen() {
+    showQuestionScreen(): void {
         DOM.startScreen.classList.add("hidden");
         DOM.resultContainer.classList.add("hidden");
         DOM.questionContainer.classList.remove("hidden");
     }
 
-    showResultScreen() {
+    showResultScreen(): void {
         DOM.questionContainer.classList.add("hidden");
         DOM.resultContainer.classList.remove("hidden");
     }
 
-    renderQuestion(question, index, total) {
+    renderQuestion(question: Question, index: number, total: number): void {
         DOM.nextBtn.classList.add("hidden");
         DOM.choicesList.innerHTML = "";
 
@@ -44,7 +50,7 @@ export default class UIController {
         });
     }
 
-    highlightAnswers(correctAnswer, selectedChoice) {
+    highlightAnswers(correctAnswer: string, selectedChoice: string): void {
         const allChoices = DOM.choicesList.querySelectorAll("li");
 
         allChoices.forEach(li => {
@@ -65,14 +71,14 @@ export default class UIController {
         DOM.nextBtn.classList.remove("hidden");
     }
 
-    renderResult(score, total, message) {
+    renderResult(score: number, total: number, message: string): void {
         DOM.scoreDisplay.textContent =
             `You scored ${score} / ${total}`;
 
         DOM.performanceDisplay.textContent = message;
     }
 
-    renderLeaderboard(entries) {
+    renderLeaderboard(entries: LeaderboardEntry[]): void {
         DOM.leaderboardList.innerHTML = "";
 
         entries.forEach((entry, i) => {
@@ -84,19 +90,19 @@ export default class UIController {
         });
     }
 
-    updateTimerDisplay(timeLeft) {
+    updateTimerDisplay(timeLeft: string): void {
         DOM.timerDisplay.textContent = timeLeft;
     }
 
-    getSelectedCategory() {
-        return DOM.categorySelect.value;
+    getSelectedCategory(): CategoryFilter {
+        return DOM.categorySelect.value as CategoryFilter;
     }
 
-    getSelectedDifficulty() {
-        return DOM.difficultySelect.value;
+    getSelectedDifficulty(): DifficultyFilter {
+        return DOM.difficultySelect.value as DifficultyFilter;
     }
 
-    clearChoicesInteraction() {
+    clearChoicesInteraction(): void {
         const allChoices = DOM.choicesList.querySelectorAll("li");
         allChoices.forEach(li => {
             li.style.pointerEvents = "auto";

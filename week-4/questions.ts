@@ -1,4 +1,6 @@
-const questionBank = {
+import type { QuestionBank } from "./src/types/models.js";
+
+const questionBank: QuestionBank = {
   Science: {
     Easy: [
       { question: "Which planet is Red Planet?", choices: ["Mars", "Venus", "Saturn", "Jupiter"], answer: "Mars" },

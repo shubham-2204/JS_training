@@ -1,25 +1,33 @@
 import { STORAGE_KEYS } from "../constants/storageKeys.js";
 import { APP_CONFIG } from "../constants/appConfig.js";
+import { safeParse } from "../utils/helpers.js";
+import type { LeaderboardEntry } from "../types/models.js";
 
 export default class LeaderboardService {
-    parseStoredEntries() {
-        try {
-            const parsed = JSON.parse(
-                localStorage.getItem(STORAGE_KEYS.LEADERBOARD)
-            );
-            return Array.isArray(parsed) ? parsed : [];
-        } catch {
-            return [];
-        }
+    parseStoredEntries(): LeaderboardEntry[] {
+        const parsed = safeParse<unknown[]>(
+            localStorage.getItem(STORAGE_KEYS.LEADERBOARD),
+            []
+        );
+
+        return parsed.filter(
+            (entry): entry is LeaderboardEntry =>
+                !!entry &&
+                typeof entry === "object" &&
+                "username" in entry &&
+                "score" in entry &&
+                typeof entry.username === "string" &&
+                typeof entry.score === "number"
+        );
     }
 
-    save(username, score) {
+    save(username: string, score: number): void {
         if (!username || typeof score !== "number") {
             return;
         }
 
         const stored = this.parseStoredEntries();
-        const bestScoreByUser = new Map();
+        const bestScoreByUser = new Map<string, number>();
 
         stored.forEach(entry => {
             if (
@@ -51,11 +59,11 @@ export default class LeaderboardService {
         );
     }
 
-    getAll() {
+    getAll(): LeaderboardEntry[] {
         return this.parseStoredEntries();
     }
 
-    clear() {
+    clear(): void {
         localStorage.removeItem(STORAGE_KEYS.LEADERBOARD);
     }
 }

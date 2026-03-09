@@ -7,9 +7,19 @@ import { DOM } from "../ui/DOMElements.js";
 import { APP_CONFIG } from "../constants/appConfig.js";
 import { QUIZ_MESSAGES } from "../constants/messages.js";
 import { formatTime } from "../utils/helpers.js";
+import type { QuestionBank } from "../types/models.js";
 
 export default class QuizApp {
-    constructor(questionBank) {
+    private authService: AuthService;
+    private authController: AuthController;
+    private leaderboardService: LeaderboardService;
+    private quizEngine: QuizEngine;
+    private ui: UIController;
+    private timerInterval: ReturnType<typeof setInterval> | null;
+    private timeLeft: number;
+    private hasAnsweredCurrentQuestion: boolean;
+
+    constructor(questionBank: QuestionBank) {
         this.authService = new AuthService();
         this.authController = new AuthController(this.authService);
         this.leaderboardService = new LeaderboardService();
@@ -20,7 +30,7 @@ export default class QuizApp {
         this.hasAnsweredCurrentQuestion = false;
     }
 
-    init() {
+    init(): void {
         this.bindAuthFlow();
         this.bindQuizFlow();
 
@@ -32,19 +42,17 @@ export default class QuizApp {
         this.renderLeaderboard();
     }
 
-    bindAuthFlow() {
+    bindAuthFlow(): void {
         this.authController.init(
             () => this.ui.showStartScreen(),
             () => {
-                this.stopTimer();
                 this.ui.showAuthScreen();
             }
         );
     }
 
-    bindQuizFlow() {
+    bindQuizFlow(): void {
         DOM.startBtn.addEventListener("click", () => {
-            this.stopTimer();
             const category = this.ui.getSelectedCategory();
             const difficulty = this.ui.getSelectedDifficulty();
             const started = this.quizEngine.start(category, difficulty);
@@ -62,12 +70,11 @@ export default class QuizApp {
         });
 
         DOM.restartBtn.addEventListener("click", () => {
-            this.stopTimer();
             this.ui.showStartScreen();
         });
     }
 
-    showQuestion() {
+    showQuestion(): void {
         const question = this.quizEngine.currentQuestion();
         if (!question) {
             this.showResult();
@@ -84,12 +91,12 @@ export default class QuizApp {
         const choices = DOM.choicesList.querySelectorAll("li");
         choices.forEach(choiceElement => {
             choiceElement.addEventListener("click", () => {
-                this.handleAnswer(choiceElement.textContent);
+                this.handleAnswer(choiceElement.textContent ?? "");
             });
         });
     }
 
-    handleAnswer(selectedChoice) {
+    handleAnswer(selectedChoice: string): void {
         if (this.hasAnsweredCurrentQuestion) {
             return;
         }
@@ -104,7 +111,7 @@ export default class QuizApp {
         this.ui.highlightAnswers(correctAnswer, selectedChoice);
     }
 
-    goNext() {
+    goNext(): void {
         this.quizEngine.next();
 
         if (this.quizEngine.isFinished()) {
@@ -114,7 +121,7 @@ export default class QuizApp {
         }
     }
 
-    showResult() {
+    showResult(): void {
         this.stopTimer();
         const score = this.quizEngine.getScore();
         const total = this.quizEngine.getTotalQuestions();
@@ -140,12 +147,12 @@ export default class QuizApp {
         this.renderLeaderboard();
     }
 
-    renderLeaderboard() {
+    renderLeaderboard(): void {
         const entries = this.leaderboardService.getAll();
         this.ui.renderLeaderboard(entries);
     }
 
-    startTimer() {
+    startTimer(): void {
         this.stopTimer();
         this.timeLeft = APP_CONFIG.TIMER_DURATION;
         this.ui.updateTimerDisplay(formatTime(this.timeLeft));
@@ -162,8 +169,10 @@ export default class QuizApp {
         }, 1000);
     }
 
-    stopTimer() {
-        clearInterval(this.timerInterval);
-        this.timerInterval = null;
+    stopTimer(): void {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
     }
 }
