@@ -1,0 +1,178 @@
+import AuthService from "../auth/AuthService.js";
+import AuthController from "../auth/AuthController.js";
+import QuizEngine from "../quiz/QuizEngine.js";
+import LeaderboardService from "../quiz/LeaderboardService.js";
+import UIController from "../ui/UIController.js";
+import { DOM } from "../ui/DOMElements.js";
+import { APP_CONFIG } from "../constants/appConfig.js";
+import { QUIZ_MESSAGES } from "../constants/messages.js";
+import { formatTime } from "../utils/helpers.js";
+import type { QuestionBank } from "../types/models.js";
+
+export default class QuizApp {
+    private authService: AuthService;
+    private authController: AuthController;
+    private leaderboardService: LeaderboardService;
+    private quizEngine: QuizEngine;
+    private ui: UIController;
+    private timerInterval: ReturnType<typeof setInterval> | null;
+    private timeLeft: number;
+    private hasAnsweredCurrentQuestion: boolean;
+
+    constructor(questionBank: QuestionBank) {
+        this.authService = new AuthService();
+        this.authController = new AuthController(this.authService);
+        this.leaderboardService = new LeaderboardService();
+        this.quizEngine = new QuizEngine(questionBank);
+        this.ui = new UIController();
+        this.timerInterval = null;
+        this.timeLeft = APP_CONFIG.TIMER_DURATION;
+        this.hasAnsweredCurrentQuestion = false;
+    }
+
+    init(): void {
+        this.bindAuthFlow();
+        this.bindQuizFlow();
+
+        if (this.authService.getCurrentUser()) {
+            this.ui.showStartScreen();
+        } else {
+            this.ui.showAuthScreen();
+        }
+        this.renderLeaderboard();
+    }
+
+    bindAuthFlow(): void {
+        this.authController.init(
+            () => this.ui.showStartScreen(),
+            () => {
+                this.ui.showAuthScreen();
+            }
+        );
+    }
+
+    bindQuizFlow(): void {
+        DOM.startBtn.addEventListener("click", () => {
+            const category = this.ui.getSelectedCategory();
+            const difficulty = this.ui.getSelectedDifficulty();
+            const started = this.quizEngine.start(category, difficulty);
+
+            if (!started) {
+                alert(QUIZ_MESSAGES.NO_QUESTIONS);
+                return;
+            }
+            this.ui.showQuestionScreen();
+            this.showQuestion();
+        });
+
+        DOM.nextBtn.addEventListener("click", () => {
+            this.goNext();
+        });
+
+        DOM.restartBtn.addEventListener("click", () => {
+            this.ui.showStartScreen();
+        });
+    }
+
+    showQuestion(): void {
+        const question = this.quizEngine.currentQuestion();
+        if (!question) {
+            this.showResult();
+            return;
+        }
+        this.hasAnsweredCurrentQuestion = false;
+
+        this.ui.renderQuestion(
+            question,
+            this.quizEngine.getCurrentIndex(),
+            this.quizEngine.getTotalQuestions()
+        );
+        this.startTimer();
+        const choices = DOM.choicesList.querySelectorAll("li");
+        choices.forEach(choiceElement => {
+            choiceElement.addEventListener("click", () => {
+                this.handleAnswer(choiceElement.textContent ?? "");
+            });
+        });
+    }
+
+    handleAnswer(selectedChoice: string): void {
+        if (this.hasAnsweredCurrentQuestion) {
+            return;
+        }
+        this.hasAnsweredCurrentQuestion = true;
+        this.stopTimer();
+        const question = this.quizEngine.currentQuestion();
+        if (!question) {
+            return;
+        }
+        const correctAnswer = question.answer;
+        this.quizEngine.answer(selectedChoice);
+        this.ui.highlightAnswers(correctAnswer, selectedChoice);
+    }
+
+    goNext(): void {
+        this.quizEngine.next();
+
+        if (this.quizEngine.isFinished()) {
+            this.showResult();
+        } else {
+            this.showQuestion();
+        }
+    }
+
+    showResult(): void {
+        this.stopTimer();
+        const score = this.quizEngine.getScore();
+        const total = this.quizEngine.getTotalQuestions();
+        const percentage = (score / total) * 100;
+
+        let message = "";
+
+        if (percentage >= 80)
+            message = QUIZ_MESSAGES.PERFORMANCE.EXCELLENT;
+        else if (percentage >= 50)
+            message = QUIZ_MESSAGES.PERFORMANCE.GOOD;
+        else
+            message = QUIZ_MESSAGES.PERFORMANCE.PRACTICE;
+
+        this.ui.showResultScreen();
+        this.ui.renderResult(score, total, message);
+
+        const currentUser = this.authService.getCurrentUser();
+        if (currentUser) {
+            this.leaderboardService.save(currentUser, score);
+        }
+
+        this.renderLeaderboard();
+    }
+
+    renderLeaderboard(): void {
+        const entries = this.leaderboardService.getAll();
+        this.ui.renderLeaderboard(entries);
+    }
+
+    startTimer(): void {
+        this.stopTimer();
+        this.timeLeft = APP_CONFIG.TIMER_DURATION;
+        this.ui.updateTimerDisplay(formatTime(this.timeLeft));
+
+        this.timerInterval = setInterval(() => {
+            this.timeLeft--;
+
+            this.ui.updateTimerDisplay(formatTime(this.timeLeft));
+
+            if (this.timeLeft <= 0) {
+                this.stopTimer();
+                this.goNext();
+            }
+        }, 1000);
+    }
+
+    stopTimer(): void {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+    }
+}
